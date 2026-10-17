@@ -26,6 +26,8 @@
   --tarp-ink: #2A1F00;
   --jeep: #D42A45;
   --sky: #2D5BD0;
+  --cta-bg: #131C3A;
+  --cta-fg: #EDF0FA;
   --display: "Bungee", "Arial Black", Impact, sans-serif;
   --body: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --mono: "DM Mono", ui-monospace, Consolas, monospace;
@@ -33,12 +35,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0D1430; --surface: #16204A; --ink: #EDF0FA; --muted: #A3ACCB; --line: #2A3666;
-    --tarp: #FFC531; --tarp-ink: #2A1F00; --jeep: #FF5C74; --sky: #7FA2FF; color-scheme: dark;
+    --tarp: #FFC531; --tarp-ink: #2A1F00; --jeep: #FF5C74; --sky: #7FA2FF; --cta-bg: #060A1F; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0D1430; --surface: #16204A; --ink: #EDF0FA; --muted: #A3ACCB; --line: #2A3666;
-  --tarp: #FFC531; --tarp-ink: #2A1F00; --jeep: #FF5C74; --sky: #7FA2FF; color-scheme: dark;
+  --tarp: #FFC531; --tarp-ink: #2A1F00; --jeep: #FF5C74; --sky: #7FA2FF; --cta-bg: #060A1F; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -189,7 +191,7 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
 @media (max-width: 640px) { .ticket { grid-template-columns: 1fr auto; } .ticket .when { grid-column: 1 / -1; border-right: 0; border-bottom: 2px dashed var(--line); padding: 0 0 8px; } }
 
 /* CTA */
-.cta { background: var(--ink); color: var(--bg); border-bottom: 0; }
+.cta { background: var(--cta-bg); color: var(--cta-fg); border-bottom: 0; }
 .cta h2 { font-size: clamp(40px, 8vw, 96px); color: var(--tarp); }
 .cta ol { margin: 0; padding: 0; list-style: none; counter-reset: c; display: grid; gap: 12px; max-width: 640px; }
 .cta li { counter-increment: c; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; font-size: 19px; }
@@ -201,6 +203,51 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
 .sign { font-family: var(--mono); font-size: 14px; opacity: .75; }
 .links { display: flex; flex-wrap: wrap; gap: 10px 18px; font-family: var(--mono); font-size: 14px; }
 .cta a { color: var(--tarp); }
+
+/* MOBILE VERSION: swipe rows, compact hero, sticky action bar */
+.swipe-hint, .mbar { display: none; }
+@media (max-width: 640px) {
+  body { font-size: 16px; padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .slide { padding-block: 44px; }
+  .wrap { gap: 20px; }
+  h2 { font-size: 26px; }
+  .lede { font-size: 17px; }
+
+  /* hero: headline, then a smaller tilted photo, then the pitch */
+  .hero .wrap { gap: 18px; }
+  .hero .copy { display: contents; }
+  .hero .eyebrow { order: 1; }
+  .hero h1 { order: 2; font-size: clamp(44px, 13vw, 60px); }
+  .polaroid { order: 3; width: min(62vw, 240px); justify-self: end; margin: -6px 6px 6px 0; padding: 10px 10px 12px; }
+  .polaroid figcaption { font-size: 11.5px; }
+  .hero .sub { order: 4; font-size: 18px; }
+  .hero .foot { order: 5; }
+  .hero .stamp { left: -42px; right: auto; bottom: 34px; font-size: 13px; padding: 6px 10px; border-width: 3px; mix-blend-mode: normal; opacity: 1; animation: none; transform: rotate(-12deg); }
+
+  /* swipe rows: one card at a time with the next one peeking */
+  .programs, .tiers, .paths { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    margin-inline: -16px; padding-inline: 16px; scroll-padding-inline: 16px; padding-bottom: 6px; scrollbar-width: none; }
+  .programs::-webkit-scrollbar, .tiers::-webkit-scrollbar, .paths::-webkit-scrollbar { display: none; }
+  .programs > *, .tiers > *, .paths > * { flex: 0 0 84%; scroll-snap-align: start; }
+  .tiers { padding-top: 24px; }
+  .swipe-hint { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: -8px; }
+  .swipe-hint b { color: var(--jeep); font-weight: 500; }
+
+  .quests { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .quest { padding-left: 10px; }
+  .quest .v { font-size: 20px; }
+  .quest .n { display: none; }
+  .ticket { padding: 12px 14px; gap: 10px; }
+  .cta h2 { font-size: 44px; }
+  .cta li { font-size: 17px; }
+
+  /* sticky bottom bar */
+  .mbar { display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -10px 24px -16px rgba(0,0,0,.35); }
+  .mbar a { flex: 1; text-align: center; text-decoration: none; font-weight: 800; padding: 12px 10px; border-radius: 10px; border: 2px solid var(--ink); color: var(--ink); }
+  .mbar a.go { background: var(--tarp); border-color: var(--tarp); color: var(--tarp-ink); }
+}
 
 @media (prefers-reduced-motion: reduce) { .stamp { animation: none; } }
 </style>
@@ -667,7 +714,7 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
   // programs
   h.push('<section class="slide"><div class="wrap">' + eb('Ang Ini-sponsor Mo') +
     '<h2>5 Programs. 1 Tao. 0 Tulog.</h2>' +
-    '<div class="programs">' + C.programs.map(function (p) {
+    '<div class="swipe-hint" aria-hidden="true"><span>Swipe for more</span><b>&rarr;</b></div>' + '<div class="programs">' + C.programs.map(function (p) {
       return '<article class="prog"><span class="tag">' + esc(p.tag) + '</span><h3>' + esc(p.name) + '</h3><p>' + esc(p.what) + '</p>' +
         (p.sample_titles ? '<ul>' + p.sample_titles.map(function (t) { return '<li>“' + esc(t) + '”</li>'; }).join('') + '</ul>' : '') +
         '<p class="proof">' + esc(p.proof) + '</p><p class="where">' + esc(p.where) + '</p></article>';
@@ -694,7 +741,7 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
   h.push('<section class="slide" id="tiers"><div class="wrap">' + eb('Sponsorship Tiers') +
     '<h2>Pumili ng Tier. Lahat Monthly.</h2>' +
     '<p class="lede">Pataas nang pataas ang perks. Bawat tier ay kasama ang lahat ng nasa ibaba nito.</p>' +
-    '<div class="tiers">' + C.tiers.map(function (t) {
+    '<div class="swipe-hint" aria-hidden="true"><span>Swipe for more</span><b>&rarr;</b></div>' + '<div class="tiers">' + C.tiers.map(function (t) {
       return '<article class="tag-card' + (t.featured ? ' featured' : '') + '" style="--c:' + tierColor[t.id] + '">' +
         (t.featured ? '<span class="badge">Fan favorite (sana)</span>' : '') +
         (t.slots ? '<span class="slots">' + t.slots + ' slots lang</span>' : '') +
@@ -707,7 +754,7 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
   // paths
   h.push('<section class="slide"><div class="wrap">' + eb('Ang Math') +
     '<h2>' + esc(C.paths_to_20k.title) + '</h2>' +
-    '<div class="paths">' + C.paths_to_20k.paths.map(function (p) {
+    '<div class="swipe-hint" aria-hidden="true"><span>Swipe for more</span><b>&rarr;</b></div>' + '<div class="paths">' + C.paths_to_20k.paths.map(function (p) {
       var sum = 0;
       var parts = p.combo.map(function (c) { var t = tierById[c[0]]; sum += t.price * c[1]; return '<span class="chip">' + c[1] + '× ' + esc(t.name) + '</span>'; });
       return '<div class="path"><h3>' + esc(p.name) + '</h3><div class="eq">' + parts.join('<span class="op">+</span>') + '<span class="op">=</span><span class="sum">' + peso(sum) + '</span></div><p>' + esc(p.note) + '</p></div>';
@@ -734,7 +781,7 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
 
   // CTA
   var M = C.meta;
-  h.push('<section class="slide cta"><div class="wrap">' +
+  h.push('<section class="slide cta" id="join"><div class="wrap">' +
     '<h2>' + esc(C.cta.headline) + '</h2>' +
     '<ol>' + C.cta.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' +
     (C.cta.start ? '<p class="closer" style="color:var(--tarp)">' + esc(C.cta.start) + '</p>' : '') +
@@ -744,6 +791,7 @@ h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.6vw
     '<div class="links"><a href="' + M.links.youtube + '" target="_blank" rel="noopener">YouTube</a><a href="' + M.links.spotify + '" target="_blank" rel="noopener">Spotify</a><a href="' + M.links.tiktok + '" target="_blank" rel="noopener">TikTok</a><span>' + esc(M.links.handle) + ' everywhere</span></div>' +
     '</div></section>');
 
+  h.push('<nav class="mbar" aria-label="Quick actions"><a href="#tiers">See tiers</a><a class="go" href="#join">G ako!</a></nav>');
   document.getElementById('app').innerHTML = h.join('');
 
   var btn = document.getElementById('copy');
